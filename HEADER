@@ -1,0 +1,36 @@
+&control
+    calculation        = 'scf'
+    restart_mode       = 'from_scratch'
+    prefix             = 'scf'
+    tstress            = .true.
+    tprnfor            = .true.
+    pseudo_dir         = './Pseudo'
+    outdir             = './tmp/'
+    verbosity          = 'high'
+&end
+
+&system
+    ibrav              = 0
+    nat                = 8 
+    ntyp               = 3 
+    ecutwfc            = 90
+    ecutrho            = 900
+    degauss            = 0.02
+    occupations        = 'smearing'
+    smearing           = 'mp'
+&end
+
+&electrons
+   mixing_beta = 0.2
+      conv_thr = 1.0d-9
+&end
+
+&ions
+&end
+
+ATOMIC_SPECIES
+    Pd 106.42   Pd.pbe-n-rrkjus_psl.1.0.0.UPF
+    Cu 63.546   Cu.pbe-dn-rrkjus_psl.1.0.0.UPF
+    H  1.007    H.pbe-rrkjus_psl.1.0.0.UPF
+K_POINTS { automatic }
+ 21 21 8 1 1 1
