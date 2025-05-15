@@ -87,13 +87,12 @@ def crystal_to_cartesian(cell,positions):
 
 
 
-
 print("Unit cell poscar will be read from POSCAR.")
 print("q pint and vectors will be read from VECTOR.")
 xx,yy,zz = input("Enter a truple for the supercell size: ").split()
 supercell = [int(xx),int(yy),int(zz)]
 factor = float(input("Enter scaling factor: "))
-
+FORMALISM = str(input("Enter transformation formalism QE or PHONOPY: "))
 
 
 
@@ -130,10 +129,13 @@ for i in range(-10,10,1):
             for y in range(0,supercell[1]):
                 for z in range(0,supercell[2]):
                     for k in range(0,3):
-                        vec = vector[j][k]*cmath.exp(2j*math.pi*np.dot(q,[x,y,z]))
+                        if FORMALISM == "PHONOPY": vec = vector[j][k]*cmath.exp(2j*math.pi*np.dot(q,[x,y,z]) + 2j*math.pi*np.dot(q,positions[j]))
+                        else: vec = vector[j][k]*cmath.exp(2j*math.pi*np.dot(q,[x,y,z]))
                         tmp[k] = positions[j][k] + cell[0][k]*x + cell[1][k]*y + cell[2][k]*z  + step * vec.real/math.sqrt(supercell[0]*supercell[1]*supercell[2])
                     new_positions.append([tmp[0],tmp[1],tmp[2]])
-    write_poscar("POSCAR_"+str(step)+".vasp",s,"Cartesian\n", new_cell, new_positions, new_atoms_type_numbers_degen, new_atom_types)
-    write_scf("scf_"+str(step)+".in",s, "angstrom", new_cell, new_positions, new_atoms_type_numbers_degen, new_atom_types)
+    if FORMALISM == "PHONOPY": write_poscar("POSCAR_"+str(step)+".vasp",s,"Cartesian\n", new_cell, new_positions, new_atoms_type_numbers_degen, new_atom_types)
+    else: write_scf("scf_"+str(step)+".in",s, "angstrom", new_cell, new_positions, new_atoms_type_numbers_degen, new_atom_types)
     new_positions = []
 print(new_cell)
+
+
